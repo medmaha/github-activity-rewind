@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -16,11 +15,11 @@ import {
   Twitter,
   Facebook,
   Instagram,
-  ChevronDown,
-  ChevronUp,
   Loader2,
   InfoIcon,
   ChevronsUpDown,
+  Linkedin,
+  CopyIcon,
 } from "lucide-react";
 import { AnalyzedData } from "@/lib/types";
 import useAIQuery from "@/hooks/useAIQuery";
@@ -30,6 +29,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@radix-ui/react-accordion";
+import { ReactNode, useState } from "react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 
 interface AIInsightsDisplayProps {
   userData: AnalyzedData;
@@ -136,7 +138,7 @@ export default function AIInsightsDisplay({
             <Tabs defaultValue="linkedin" className="w-full ">
               <TabsList className="grid w-full grid-cols-4 bg-gray-700">
                 <TabsTrigger value="linkedin">
-                  <MessageCircle className="w-5 h-5" />
+                  <Linkedin className="w-5 h-5" />
                 </TabsTrigger>
                 <TabsTrigger value="twitter">
                   <Twitter className="w-5 h-5" />
@@ -151,24 +153,28 @@ export default function AIInsightsDisplay({
               <TabsContent value="linkedin" className="mt-4">
                 <SocialPost
                   platform="LinkedIn"
+                  icon={Linkedin}
                   content={data.posts.linkedPost}
                 />
               </TabsContent>
               <TabsContent value="twitter" className="mt-4">
                 <SocialPost
                   platform="Twitter"
+                  icon={Twitter}
                   content={data.posts.twitterPost}
                 />
               </TabsContent>
               <TabsContent value="facebook" className="mt-4">
                 <SocialPost
                   platform="Facebook"
+                  icon={Facebook}
                   content={data.posts.facebookPost}
                 />
               </TabsContent>
               <TabsContent value="instagram" className="mt-4">
                 <SocialPost
                   platform="Instagram"
+                  icon={Instagram}
                   content={data.posts.instagramPost}
                 />
               </TabsContent>
@@ -227,18 +233,92 @@ function StyleCard({ title, content }: { title: string; content: string }) {
 function SocialPost({
   platform,
   content,
+  icon: Icon,
 }: {
-  platform: string;
+  icon: any;
+  platform: "LinkedIn" | "Twitter" | "Facebook" | "Instagram";
   content: string;
 }) {
+  const [copied, setCopied] = useState(false);
+  const [_content, setContent] = useState(content);
+
+  function copyContent() {
+    if (platform !== "LinkedIn") return;
+    if (copied) return;
+    window.navigator.clipboard.writeText(_content);
+    toast("Copied");
+    setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 5000);
+  }
+
+  function postContent() {
+    function encodeURIComponentSafe(text: string) {
+      return encodeURIComponent(text)
+        .replace(/%20/g, "+") // Replace spaces with '+' (common practice)
+        .replace(/\*/g, "%2A") // Encode '*' specifically
+        .replace(/\//g, "%2F"); // Encode '/' specifically
+    }
+    const year = new Date().getFullYear();
+    const title = "Github Rewind " + year;
+    const text = encodeURIComponentSafe(_content);
+
+    const url = new URL("https://www.linkedin.com/shareArticle");
+    url.searchParams.set("text", text);
+    url.searchParams.set("title", title);
+
+    const a = document.createElement("a");
+
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.href = url.toString();
+
+    document.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
   return (
     <Card className="bg-gray-800 border-gray-700 text-white motion-preset-fade-md">
       <CardHeader>
-        <CardTitle className="text-lg font-medium">{platform} Post</CardTitle>
+        <CardTitle className="text-lg font-medium">
+          <Icon className="mr-1" />
+          {platform} Post
+        </CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-300 leading-relaxed">{content}</p>
-        <Button className="mt-4 w-full">Share on {platform}</Button>
+        <p
+          contentEditable
+          onChange={(ev) => {
+            setContent(ev.currentTarget.innerText.trim());
+          }}
+          className="text-sm text-gray-300 leading-relaxed border focus:mb-4 border-transparent transition-all focus:p-2 rounded-md focus:border-purple-500"
+        >
+          {_content}
+        </p>
+        <div className="flex items-center justify-center gap-5 flex-wrap">
+          <Button
+            onClick={copyContent}
+            variant={"outline"}
+            className={cn(
+              "mt-4 w-full inline-flex gap-3",
+              copied && "motion-preset-confetti"
+            )}
+          >
+            <CopyIcon />
+            Copy Post
+          </Button>
+          {platform === "LinkedIn" && (
+            <Button
+              onClick={postContent}
+              className={cn("mt-4 w-full inline-flex gap-3")}
+            >
+              <Icon />
+              Share on {platform}
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
