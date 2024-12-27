@@ -19,6 +19,7 @@ export default function GitHubForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!username.trim() || username.trim().length < 3) return;
     if (userData && userData.user.username === username.trim()) return;
 
     setIsLoading(true);
