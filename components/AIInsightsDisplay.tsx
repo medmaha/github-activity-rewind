@@ -20,6 +20,7 @@ import {
   ChevronUp,
   Loader2,
   InfoIcon,
+  ChevronsUpDown,
 } from "lucide-react";
 import { AnalyzedData } from "@/lib/types";
 import useAIQuery from "@/hooks/useAIQuery";
@@ -37,19 +38,7 @@ interface AIInsightsDisplayProps {
 export default function AIInsightsDisplay({
   userData,
 }: AIInsightsDisplayProps) {
-  const [expandedSections, setExpandedSections] = useState<string[]>([]);
-
   const { data, isLoading, error: queryError } = useAIQuery(userData);
-
-  const toggleSection = (section: string) => {
-    setExpandedSections((prev) =>
-      prev.includes(section)
-        ? prev.filter((s) => s !== section)
-        : [...prev, section]
-    );
-  };
-
-  const isExpanded = (section: string) => expandedSections.includes(section);
 
   if (isLoading)
     return (
@@ -95,8 +84,6 @@ export default function AIInsightsDisplay({
               key={userData.user.username}
               title={`${year} Summary`}
               content={data.summary}
-              isExpanded={isExpanded("summary")}
-              onToggle={() => toggleSection("summary")}
             />
           )}
 
@@ -105,8 +92,6 @@ export default function AIInsightsDisplay({
               key={userData.user.username}
               title="Yearly Overview"
               content={data.YearlyOverview}
-              isExpanded={isExpanded("overview")}
-              onToggle={() => toggleSection("overview")}
             />
           )}
           {!!data.mostSignificantAchievement?.trim() && (
@@ -114,8 +99,6 @@ export default function AIInsightsDisplay({
               key={userData.user.username}
               title="Most Significant Achievement"
               content={data.mostSignificantAchievement}
-              isExpanded={isExpanded("achievement")}
-              onToggle={() => toggleSection("achievement")}
             />
           )}
           {!!data.areasForPotentialGrowth?.trim() && (
@@ -123,8 +106,6 @@ export default function AIInsightsDisplay({
               key={userData.user.username}
               title="Areas for Growth"
               content={data.areasForPotentialGrowth}
-              isExpanded={isExpanded("growth")}
-              onToggle={() => toggleSection("growth")}
             />
           )}
         </Accordion>
@@ -208,44 +189,27 @@ export default function AIInsightsDisplay({
   );
 }
 
-function Section({
-  title,
-  content,
-  isExpanded,
-  onToggle,
-}: {
-  title: string;
-  content: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-}) {
+function Section({ title, content }: { title: string; content: string }) {
   return (
-    <AccordionItem value={title}>
-      <Card className="bg-gray-700 border-gray-700 text-white">
+    <Card className="bg-gray-700 border-gray-700 text-white">
+      <AccordionItem value={title}>
         <AccordionTrigger value={title} className="w-full" asChild>
           <Button
             variant="ghost"
             size="sm"
-            onClick={onToggle}
             className="w-full p-4 h-12 hover:bg-gray-600 hover:text-white items-center justify-between text-left flex"
           >
             {title}
-            {isExpanded ? (
-              <ChevronUp className="h-4 w-4" />
-            ) : (
-              <ChevronDown className="h-4 w-4" />
-            )}
+            <ChevronsUpDown className="h-4 w-4" />
           </Button>
         </AccordionTrigger>
-        {isExpanded && (
+        <AccordionContent className="motion-preset-fade-md">
           <CardContent className="p-0 px-4 pb-4 pt-1">
-            <AccordionContent className="motion-preset-fade-md">
-              <p className="text-gray-300 leading-relaxed">{content}</p>
-            </AccordionContent>
+            <p className="text-gray-300 leading-relaxed">{content}</p>
           </CardContent>
-        )}
-      </Card>
-    </AccordionItem>
+        </AccordionContent>
+      </AccordionItem>
+    </Card>
   );
 }
 
