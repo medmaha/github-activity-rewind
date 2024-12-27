@@ -1,14 +1,12 @@
 "use server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { AnalyzedData } from "./types";
-import { protectRequest } from "./req.middleware";
 import { getAiPrompt } from "./aiPrompt";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function generateAIInsights(userData: AnalyzedData) {
   try {
-    protectRequest("AI");
     const model = genAI.getGenerativeModel({ model: "gemini-pro" });
     const prompt = getAiPrompt(userData);
 

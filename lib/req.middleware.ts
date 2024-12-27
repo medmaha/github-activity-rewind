@@ -11,8 +11,8 @@ export const arcjetMiddlewareAI = arcjet({
     }),
     fixedWindow({
       mode: "LIVE",
-      window: "60s", // 60 second fixed window
-      max: 2, // allow a maximum of 2 requests
+      window: "600s", // 10 minutes fixed window
+      max: 1, // allow a maximum of 2 requests
     }),
   ],
 });
@@ -33,15 +33,12 @@ export const arcjetMiddlewareGithub = arcjet({
   ],
 });
 
-export async function protectRequest(type: "AI" | "Github") {
+export async function protectRequest() {
   const req = await request();
-  const decision = await (type === "AI"
-    ? arcjetMiddlewareAI
-    : arcjetMiddlewareGithub
-  ).protect(req);
+  const decision = await arcjetMiddlewareAI.protect(req);
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      throw new Error("Too Many Requests");
+      throw new Error("Too Many Requests " + decision.reason.remaining);
     } else if (decision.reason.isBot()) {
       throw new Error("No bots allowed");
     } else {

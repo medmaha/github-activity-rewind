@@ -96,10 +96,10 @@ export default function DownloadableCard({
     ctx.fillText("Top Quote", canvas.width / 2, 380);
 
     ctx.font = "36px Inter";
-    const quote = aiResponse.data?.userStyle.topQuote || "";
-    // const quotePt2 = "today started as a beginner.";
+    const quote = "Every expert you admire";
+    const quotePt2 = "today started as a beginner.";
     ctx.fillText(quote, canvas.width / 2, 450);
-    // ctx.fillText(quotePt2, canvas.width / 2, 490);
+    ctx.fillText(quotePt2, canvas.width / 2, 490);
 
     // Draw footer
     ctx.font = "32px Inter";

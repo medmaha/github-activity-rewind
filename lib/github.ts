@@ -14,7 +14,7 @@ export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
   // const parsedData: any[] = JSON.parse(savedData || "[]") || [];
 
   try {
-    protectRequest("Github");
+    protectRequest();
     // throw new Error("");
     const [user, repos, events] = await Promise.all([
       octokit.users.getByUsername({ username }),
