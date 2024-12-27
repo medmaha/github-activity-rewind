@@ -295,6 +295,7 @@ function SocialPost({
       <CardContent>
         <p
           contentEditable
+          ref={contentRef}
           className="text-sm text-gray-300 leading-relaxed border focus:mb-4 border-transparent transition-all focus:p-2 rounded-md focus:border-purple-500"
         >
           {content}
