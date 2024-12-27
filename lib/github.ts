@@ -18,7 +18,7 @@ export async function fetchGitHubData(
 
   let notFound = false;
   try {
-    const decision = await protectRequest();
+    await protectRequest();
     // const cachedData = parsedData.find(
     //   (data: any) => data.analysis.user.username === username
     // );
@@ -77,7 +77,7 @@ export async function fetchGitHubData(
   } catch (error: any) {
     return {
       err: `Error! ${
-        error.message || "An unknown error occurred while fetching GitHub data"
+        error?.message || "An unknown error occurred while fetching GitHub data"
       }`,
     };
   }

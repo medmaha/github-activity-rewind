@@ -12,7 +12,7 @@ export const arcjetMiddlewareAI = arcjet({
     fixedWindow({
       mode: "LIVE",
       window: "300s", // 5 minutes fixed window
-      max: 1, // allow a maximum of 2 requests
+      max: 3, // allow a maximum of 2 requests
     }),
   ],
 });
