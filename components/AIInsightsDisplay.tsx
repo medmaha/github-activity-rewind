@@ -29,7 +29,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@radix-ui/react-accordion";
-import { ReactNode, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -240,12 +240,14 @@ function SocialPost({
   content: string;
 }) {
   const [copied, setCopied] = useState(false);
-  const [_content, setContent] = useState(content);
+  const contentRef = useRef<HTMLParagraphElement>(null);
 
   function copyContent() {
     if (platform !== "LinkedIn") return;
+    if (!contentRef.current) return;
     if (copied) return;
-    window.navigator.clipboard.writeText(_content);
+
+    window.navigator.clipboard.writeText(contentRef.current?.innerText);
     toast("Copied");
     setCopied(true);
     setTimeout(() => {
@@ -255,14 +257,18 @@ function SocialPost({
 
   function postContent() {
     function encodeURIComponentSafe(text: string) {
-      return encodeURIComponent(text)
-        .replace(/%20/g, "+") // Replace spaces with '+' (common practice)
-        .replace(/\*/g, "%2A") // Encode '*' specifically
-        .replace(/\//g, "%2F"); // Encode '/' specifically
+      return text;
+      // return encodeURIComponent(text)
+      //   .replace(/%20/g, "+") // Replace spaces with '+' (common practice)
+      //   .replace(/\*/g, "%2A") // Encode '*' specifically
+      //   .replace(/\//g, "%2F"); // Encode '/' specifically
     }
+    if (!contentRef.current) return;
+    if (copied) return;
+
     const year = new Date().getFullYear();
     const title = "Github Rewind " + year;
-    const text = encodeURIComponentSafe(_content);
+    const text = encodeURIComponentSafe(contentRef.current?.innerText);
 
     const url = new URL("https://www.linkedin.com/shareArticle");
     url.searchParams.set("text", text);
@@ -281,20 +287,17 @@ function SocialPost({
   return (
     <Card className="bg-gray-800 border-gray-700 text-white motion-preset-fade-md">
       <CardHeader>
-        <CardTitle className="text-lg font-medium inline-flex items-center">
-          <Icon className="mr-1" />
+        <CardTitle className="text-lg gap-2 font-medium inline-flex items-center">
+          <Icon className="" />
           {platform} Post
         </CardTitle>
       </CardHeader>
       <CardContent>
         <p
           contentEditable
-          onChange={(ev) => {
-            setContent(ev.currentTarget.innerText.trim());
-          }}
           className="text-sm text-gray-300 leading-relaxed border focus:mb-4 border-transparent transition-all focus:p-2 rounded-md focus:border-purple-500"
         >
-          {_content}
+          {content}
         </p>
         <div className="flex items-center justify-center gap-5 flex-wrap">
           <Button
@@ -306,7 +309,8 @@ function SocialPost({
             )}
           >
             <CopyIcon />
-            Copy Post
+            {copied && "Copied"}
+            {!copied && "Copy Post"}
           </Button>
           {platform === "LinkedIn" && (
             <Button
