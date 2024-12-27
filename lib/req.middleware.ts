@@ -38,7 +38,7 @@ export async function protectRequest() {
   const decision = await arcjetMiddlewareAI.protect(req);
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      throw new Error("You've hit the rate limit please try again in 5mins");
+      throw new Error("You've hit the rate limit please try again in 2mins");
     } else if (decision.reason.isBot()) {
       throw new Error("No bots allowed");
     } else {

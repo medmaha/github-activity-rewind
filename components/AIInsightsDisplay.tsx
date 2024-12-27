@@ -89,11 +89,7 @@ export default function AIInsightsDisplay({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-8">
-        <Accordion
-          key={userData.user.username}
-          type="multiple"
-          className="space-y-6"
-        >
+        <Accordion type="multiple" className="space-y-6">
           {!!data.summary?.trim() && (
             <Section
               key={userData.user.username}
@@ -226,7 +222,7 @@ function Section({
   return (
     <AccordionItem value={title}>
       <Card className="bg-gray-700 border-gray-700 text-white">
-        <AccordionTrigger className="w-full" asChild>
+        <AccordionTrigger value={title} className="w-full" asChild>
           <Button
             variant="ghost"
             size="sm"
