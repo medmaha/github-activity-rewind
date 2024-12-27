@@ -274,7 +274,6 @@ function SocialPost({
     a.rel = "noopener noreferrer";
     a.href = url.toString();
 
-    document.appendChild(a);
     a.click();
     a.remove();
   }
@@ -282,7 +281,7 @@ function SocialPost({
   return (
     <Card className="bg-gray-800 border-gray-700 text-white motion-preset-fade-md">
       <CardHeader>
-        <CardTitle className="text-lg font-medium">
+        <CardTitle className="text-lg font-medium inline-flex items-center">
           <Icon className="mr-1" />
           {platform} Post
         </CardTitle>
@@ -302,7 +301,7 @@ function SocialPost({
             onClick={copyContent}
             variant={"outline"}
             className={cn(
-              "mt-4 w-full inline-flex gap-3",
+              "mt-4 text-black/80 flex-1 inline-flex gap-3",
               copied && "motion-preset-confetti"
             )}
           >
@@ -312,7 +311,7 @@ function SocialPost({
           {platform === "LinkedIn" && (
             <Button
               onClick={postContent}
-              className={cn("mt-4 w-full inline-flex gap-3")}
+              className={cn("mt-4 flex-1 inline-flex gap-3")}
             >
               <Icon />
               Share on {platform}
