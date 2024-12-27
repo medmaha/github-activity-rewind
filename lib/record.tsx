@@ -1,4 +1,3 @@
-import "server only";
 import DB from "./db";
 import { rewinds } from "./db/schema";
 import { eq } from "drizzle-orm";
