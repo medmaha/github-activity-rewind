@@ -38,11 +38,14 @@ export async function protectRequest() {
   const decision = await arcjetMiddlewareAI.protect(req);
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      throw new Error("Too Many Requests " + decision.reason.remaining);
+      throw new Error(
+        "You've hit the rate limit please wait for +" + decision.reason.window
+      );
     } else if (decision.reason.isBot()) {
       throw new Error("No bots allowed");
     } else {
       throw new Error("Forbidden");
     }
   }
+  return decision;
 }
