@@ -18,8 +18,12 @@ export default function GitHubForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (userData && userData.user.username === username.trim()) return;
+
     setIsLoading(true);
     setError(null);
+
     try {
       const data = await fetchGitHubData(username.trim());
       if ((data as any).err) {
