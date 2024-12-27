@@ -34,6 +34,7 @@ export const arcjetMiddlewareGithub = arcjet({
 });
 
 export async function protectRequest() {
+  return;
   const req = await request();
   const decision = await arcjetMiddlewareAI.protect(req);
   if (decision.isDenied()) {

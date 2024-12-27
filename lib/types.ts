@@ -1,14 +1,34 @@
 export interface AnalyzedData {
   totalContributions: number;
-  topRepositories: any[];
+  topRepositories: {
+    name: string;
+    stars: string;
+    description: string;
+    created_at: string;
+    pushed_at: string;
+    forked: number | null;
+  }[];
   languagesUsed: Record<string, number>;
   followers: number;
   publicRepos: number;
   pullRequests: number;
   starsEarned: number;
   recentEvents: {
-    type?: string | null;
-    payload: Record<string, any>;
+    type: string | null;
+    created_at: string | null;
+    payload: {
+      action?: string;
+      issue?: Record<string, any>;
+      comment?: Record<string, any>;
+      pages?: {
+        page_name?: string;
+        title?: string;
+        summary?: string | null;
+        action?: string;
+        sha?: string;
+        html_url?: string;
+      }[];
+    };
   }[];
   user: {
     name: string;

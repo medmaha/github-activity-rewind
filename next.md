@@ -1,6 +1,18 @@
 # Next Features in line
 
-1. **Contribution Calendar Heatmap**
+Generate insights and a creative summary for this GitHub user data:
+Generate **ONLY** a valid JSON response. Do not include:
+
+- Markdown formatting.
+- Additional text, headers, explanations, or context.
+- Anything other than a plain JSON object.
+
+1. Use double quotes ("") for all keys and string values. Do not use single quotes ('').
+2. Output a plain JSON object **ONLY**.
+3. Do not use backticks, markdown, or any other formatting.
+4. Ensure the response is valid JSON ready for "JSON.parse(response)".
+
+5. **Contribution Calendar Heatmap**
 
 ```typescriptreact
 - Add a visual yearly contribution heatmap similar to GitHub's

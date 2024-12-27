@@ -1,9 +1,9 @@
 import React from "react";
 import HighlightsCard from "./HighlightsCard";
 import DownloadableCard from "./DownloadableCard";
-import LinkedInPost from "./LinkedInPost";
 import { AnalyzedData } from "@/lib/types";
 import AIInsightsDisplay from "./AIInsightsDisplay";
+import AchievementBadges from "./AchievementBadges";
 
 type Props = {
   userData: AnalyzedData;
@@ -19,6 +19,7 @@ export default function Details({ userData }: Props) {
           username={userData.user.username}
         />
       </div>
+      <AchievementBadges userData={userData} />
       {/* <LinkedInPost userData={userData} /> */}
       <AIInsightsDisplay userData={userData} />
     </div>

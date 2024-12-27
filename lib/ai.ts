@@ -7,22 +7,15 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function generateAIInsights(userData: AnalyzedData) {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     const prompt = getAiPrompt(userData);
 
     const result = await model.generateContent(prompt);
     const response = result.response;
     const text = response.text();
 
-    try {
-      const parsedData = JSON.parse(text.replace(/(```)/gi, ""));
-      console.log("parsedData:", parsedData);
-      return parsedData;
-    } catch (error) {
-      console.log("Error!", text);
-    }
-
-    return text;
+    const parsedData = JSON.parse(text.replace(/(```)(json)?/gi, ""));
+    return parsedData;
   } catch (error) {
     console.error("Error generating AI insights:", error);
     throw error;

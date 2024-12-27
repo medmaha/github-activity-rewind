@@ -56,7 +56,9 @@ export default function HighlightsCard({ userData }: Props) {
               className="flex flex-col items-center justify-center p-4 bg-gray-700 rounded-lg"
             >
               <stat.icon className="h-8 w-8 mb-2 text-purple-400" />
-              <span className="text-sm text-gray-300">{stat.label}</span>
+              <span className="text-sm text-gray-300 text-center">
+                {stat.label}
+              </span>
               <span className="text-2xl font-bold">{stat.value}</span>
             </div>
           ))}

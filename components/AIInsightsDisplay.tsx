@@ -66,6 +66,7 @@ export default function AIInsightsDisplay({
         <Accordion
           key={userData.user.username}
           type="multiple"
+          defaultValue={["2024 Summary"]}
           className="space-y-6"
         >
           {!!data.summary?.trim() && (

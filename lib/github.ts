@@ -14,6 +14,12 @@ export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
   // const parsedData: any[] = JSON.parse(savedData || "[]") || [];
 
   try {
+    // const cachedData = parsedData.find(
+    //   (data: any) => data.analysis.user.username === username
+    // );
+    // if (cachedData) {
+    //   return cachedData.analysis;
+    // }
     protectRequest();
     // throw new Error("");
     const [user, repos, events] = await Promise.all([
@@ -51,22 +57,14 @@ export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
 
     // Dev Only
     // parsedData.push({
-    //   meta: { user: user.data, repos: repos.data, events: events.data },
-    //   analysis: analyzedData,
+    // meta: { user: user.data, repos: repos.data, events: events.data },
+    // analysis: analyzedData,
     // });
 
     // writeFileSync("db.json", JSON.stringify(parsedData));
 
     return analyzedData;
   } catch (error) {
-    // Dev Only
-    // const cachedData = parsedData.find(
-    // (data: any) => data.analysis.user.username === username
-    // );
-    // if (cachedData) {
-    // return cachedData.analysis;
-    // }
-
     if (error instanceof Error) {
       throw new Error(`Error! ${error.message}`);
     } else {
@@ -84,7 +82,11 @@ function recentEvents(
     .filter((event) =>
       ["PushEvent", "PullRequestEvent", "IssuesEvent"].includes(event.type!)
     )
-    .map((event) => ({ type: event.type, payload: event.payload }));
+    .map((event) => ({
+      type: event.type,
+      payload: event.payload,
+      created_at: event.created_at,
+    }));
 }
 function calculateTotalContributions(
   events: Awaited<
@@ -106,6 +108,9 @@ function getTopRepositories(
       name: repo.name,
       stars: repo.stargazers_count,
       description: repo.description,
+      created_at: repo.created_at,
+      pushed_at: repo.pushed_at,
+      forked: repo.forks_count,
     }));
 }
 
@@ -125,10 +130,18 @@ async function getLanguagesUsed(
   return languages;
 }
 
-function calculatePullRequests(events: any[]): number {
+function calculatePullRequests(
+  events: Awaited<
+    ReturnType<typeof octokit.activity.listPublicEventsForUser>
+  >["data"]
+): number {
   return events.filter((event) => event.type === "PullRequestEvent").length;
 }
 
-function calculateStarsEarned(events: any[]): number {
+function calculateStarsEarned(
+  events: Awaited<
+    ReturnType<typeof octokit.activity.listPublicEventsForUser>
+  >["data"]
+): number {
   return events.filter((event) => event.type === "WatchEvent").length;
 }
