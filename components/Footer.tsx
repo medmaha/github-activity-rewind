@@ -19,7 +19,15 @@ export function Footer() {
         <div className="mt-6 text-center text-sm">
           <p>
             &copy; {new Date().getFullYear()} GitHub Rewind. All rights
-            reserved. offered by <strong>Touray Mahammed</strong>
+            reserved. offered by{" "}
+            <a
+              href="https://linkedin.com/in/mtouray101"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-white transition-colors"
+            >
+              <strong>Touray Mahammed</strong>
+            </a>
           </p>
           <div className="mt-2">
             <Link href="#" className="hover:text-white transition-colors">

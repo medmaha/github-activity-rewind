@@ -1,3 +1,4 @@
+import { FeedbackButton } from "@/components/FeedbackButton";
 import { Footer } from "@/components/Footer";
 import GitHubForm from "@/components/GitHubForm";
 import { GithubIcon } from "lucide-react";
@@ -23,6 +24,7 @@ export default function Home() {
           <GitHubForm />
         </div>
       </main>
+      <FeedbackButton />
       <Footer />
     </div>
   );

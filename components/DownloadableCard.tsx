@@ -117,7 +117,7 @@ function drawContent(
 ) {
   // Draw header
   ctx.font = "bold 72px Inter";
-  ctx.fillText(`${userData.user.name}`, 60, 60);
+  ctx.fillText(`${userData.user.name || userData.user.username}`, 60, 60);
 
   // =========================== Style Section ===================
   ctx.font = "bold 40px Inter";

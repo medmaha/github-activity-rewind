@@ -16,7 +16,7 @@ export const arcjetMiddlewareAI = arcjet({
     }),
   ],
 });
-export const arcjetMiddlewareGithub = arcjet({
+export const arcjetMiddlewareFeedback = arcjet({
   key: process.env.ARCJET_KEY!,
   characteristics: ["ip.src"],
   rules: [
@@ -27,8 +27,8 @@ export const arcjetMiddlewareGithub = arcjet({
     }),
     fixedWindow({
       mode: "LIVE",
-      window: "60s", // 60 second fixed window
-      max: 2, // allow a maximum of 2 requests
+      window: "60s", // 5 minutes fixed window
+      max: 2, // allow a maximum of 3 requests
     }),
   ],
 });
