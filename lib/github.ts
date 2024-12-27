@@ -4,6 +4,8 @@ import { Octokit } from "@octokit/rest";
 
 import { AnalyzedData } from "./types";
 import { protectRequest } from "./req.middleware";
+import { after } from "next/server";
+import { recordUserActivity } from "./record";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
@@ -60,6 +62,8 @@ export async function fetchGitHubData(
         name: user.data.name!,
       },
     };
+
+    after(recordUserActivity(user.data.login, user.data.email || undefined));
 
     // Dev Only
     // parsedData.push({
