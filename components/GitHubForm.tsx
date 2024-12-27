@@ -30,6 +30,7 @@ export default function GitHubForm() {
         throw new Error((data as any).err);
       }
       setUserData(data as any);
+      setUsername("");
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "An unknown error occurred"
