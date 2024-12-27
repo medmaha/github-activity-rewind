@@ -11,9 +11,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Intra Software - Innovative Solutions for Modern Businesses",
+  title: "Intrasoft - Github rewind card generator",
   description:
-    "Intra Software is a leading software consultancy agency specializing in website development, institution management systems, and custom software development.",
+    "Get your own Github rewind card with AI insights? This fun and interactive tool allows you to showcase your coding journey in 2024",
 };
 
 export default function RootLayout({
