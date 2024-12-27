@@ -1,3 +1,4 @@
+import { Footer } from "@/components/Footer";
 import GitHubForm from "@/components/GitHubForm";
 import { GithubIcon } from "lucide-react";
 
@@ -5,7 +6,7 @@ export default function Home() {
   const year = new Date().getFullYear();
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white">
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-16 min-h-screen">
         <div className="flex flex-col items-center justify-center space-y-8">
           <GithubIcon className="h-20 w-20 text-white" />
           <h1 className="text-5xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -13,12 +14,16 @@ export default function Home() {
           </h1>
           <p className="text-xl text-center text-gray-300 max-w-2xl">
             Discover your GitHub journey through an AI-powered year in review.
-            Generate stunning visuals and insights to share your coding
-            achievements.
+            Generate stunning visuals and insights to share your{" "}
+            <strong className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+              public
+            </strong>{" "}
+            coding achievements.
           </p>
           <GitHubForm />
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
