@@ -1,42 +1,45 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { fetchGitHubData } from '@/lib/github'
-import HighlightsCard from './HighlightsCard'
-import LinkedInPost from './LinkedInPost'
-import DownloadableCard from './DownloadableCard'
-import { Loader2, GithubIcon } from 'lucide-react'
+import { lazy, Suspense, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { fetchGitHubData } from "@/lib/github";
+import { Loader2, GithubIcon } from "lucide-react";
+import { AnalyzedData } from "@/lib/types";
+
+const DetailsLazy = lazy(() => import("./Details"));
 
 export default function GitHubForm() {
-  const [username, setUsername] = useState('')
-  const [userData, setUserData] = useState(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [username, setUsername] = useState("");
+  const [userData, setUserData] = useState<AnalyzedData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError(null)
+    e.preventDefault();
+    setIsLoading(true);
+    setError(null);
     try {
-      const data = await fetchGitHubData(username)
-      setUserData(data)
+      const data = await fetchGitHubData(username.trim());
+      setUserData(data);
     } catch (error) {
-      console.error('Error fetching GitHub data:', error)
-      setError(error instanceof Error ? error.message : 'An unknown error occurred')
+      console.error("Error fetching GitHub data:", error);
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="w-full max-w-2xl">
+    <div className="w-full">
       <div className="w-full max-w-md mx-auto">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="relative">
             <Input
               type="text"
+              autoFocus
               placeholder="Enter GitHub username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -56,7 +59,7 @@ export default function GitHubForm() {
                 Generating Rewind...
               </>
             ) : (
-              'Generate Rewind'
+              "Generate Rewind"
             )}
           </Button>
         </form>
@@ -67,13 +70,10 @@ export default function GitHubForm() {
         </div>
       )}
       {userData && (
-        <div className="mt-12 space-y-8 animate-fade-in-up">
-          <DownloadableCard userData={userData} username={username} />
-          <HighlightsCard userData={userData} />
-          <LinkedInPost userData={userData} />
-        </div>
+        <Suspense>
+          <DetailsLazy userData={userData} />
+        </Suspense>
       )}
     </div>
-  )
+  );
 }
-

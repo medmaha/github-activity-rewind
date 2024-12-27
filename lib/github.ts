@@ -3,26 +3,37 @@
 import { Octokit } from "@octokit/rest";
 
 import { readFileSync, writeFileSync } from "node:fs";
+import { AnalyzedData } from "./types";
+import { protectRequest } from "./req.middleware";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-export async function fetchGitHubData(username: string) {
-  const savedData = readFileSync("db.json", "utf-8");
-  const parsedData: any[] = JSON.parse(savedData || "[]") || [];
+export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
+  // Dev Only
+  // const savedData = readFileSync("db.json", "utf-8");
+  // const parsedData: any[] = JSON.parse(savedData || "[]") || [];
+
   try {
-    const user = await octokit.users.getByUsername({ username });
-    const repos = await octokit.repos.listForUser({
-      username,
-      sort: "updated",
-      per_page: 100,
-    });
-    const events = await octokit.activity.listPublicEventsForUser({
-      username,
-      per_page: 100,
-    });
+    protectRequest("Github");
+    // throw new Error("");
+    const [user, repos, events] = await Promise.all([
+      octokit.users.getByUsername({ username }),
+
+      octokit.repos.listForUser({
+        username,
+        sort: "updated",
+        per_page: 100,
+      }),
+
+      octokit.activity.listPublicEventsForUser({
+        username,
+        per_page: 100,
+      }),
+    ]);
 
     // Analyze the data to extract relevant information
-    const analyzedData = {
+    const analyzedData: AnalyzedData = {
+      recentEvents: recentEvents(events.data),
       totalContributions: calculateTotalContributions(events.data),
       topRepositories: getTopRepositories(repos.data),
       languagesUsed: await getLanguagesUsed(repos.data),
@@ -30,36 +41,66 @@ export async function fetchGitHubData(username: string) {
       publicRepos: user.data.public_repos,
       pullRequests: calculatePullRequests(events.data),
       starsEarned: calculateStarsEarned(events.data),
+      user: {
+        username,
+        avatar: user.data.avatar_url,
+        bio: user.data.bio!,
+        name: user.data.name!,
+      },
     };
 
-    parsedData.push(analyzedData);
-    writeFileSync("public/data.json", JSON.stringify(parsedData));
+    // Dev Only
+    // parsedData.push({
+    //   meta: { user: user.data, repos: repos.data, events: events.data },
+    //   analysis: analyzedData,
+    // });
+
+    // writeFileSync("db.json", JSON.stringify(parsedData));
 
     return analyzedData;
   } catch (error) {
-    const cachedData = parsedData.find(
-      (data: any) => data.username === username
-    );
-    if (cachedData) {
-      return cachedData;
-    }
+    // Dev Only
+    // const cachedData = parsedData.find(
+    // (data: any) => data.analysis.user.username === username
+    // );
+    // if (cachedData) {
+    // return cachedData.analysis;
+    // }
+
     if (error instanceof Error) {
-      throw new Error(`GitHub API Error: ${error.message}`);
+      throw new Error(`Error! ${error.message}`);
     } else {
       throw new Error("An unknown error occurred while fetching GitHub data");
     }
   }
 }
 
-function calculateTotalContributions(events: any[]): number {
+function recentEvents(
+  events: Awaited<
+    ReturnType<typeof octokit.activity.listPublicEventsForUser>
+  >["data"]
+) {
+  return events
+    .filter((event) =>
+      ["PushEvent", "PullRequestEvent", "IssuesEvent"].includes(event.type!)
+    )
+    .map((event) => ({ type: event.type, payload: event.payload }));
+}
+function calculateTotalContributions(
+  events: Awaited<
+    ReturnType<typeof octokit.activity.listPublicEventsForUser>
+  >["data"]
+): number {
   return events.filter((event) =>
-    ["PushEvent", "PullRequestEvent", "IssuesEvent"].includes(event.type)
+    ["PushEvent", "PullRequestEvent", "IssuesEvent"].includes(event.type!)
   ).length;
 }
 
-function getTopRepositories(repos: any[]): any[] {
+function getTopRepositories(
+  repos: Awaited<ReturnType<typeof octokit.repos.listForUser>>["data"]
+): any[] {
   return repos
-    .sort((a, b) => b.stargazers_count - a.stargazers_count)
+    .sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0))
     .slice(0, 5)
     .map((repo) => ({
       name: repo.name,
@@ -68,7 +109,9 @@ function getTopRepositories(repos: any[]): any[] {
     }));
 }
 
-async function getLanguagesUsed(repos: any[]): Promise<Record<string, number>> {
+async function getLanguagesUsed(
+  repos: Awaited<ReturnType<typeof octokit.repos.listForUser>>["data"]
+): Promise<Record<string, number>> {
   const languages: Record<string, number> = {};
   for (const repo of repos) {
     const repoLanguages = await octokit.repos.listLanguages({

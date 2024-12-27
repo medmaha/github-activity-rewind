@@ -1,25 +1,8 @@
 import { NextResponse } from "next/server";
-import arcjet, { detectBot, shield, fixedWindow } from "@arcjet/next";
-
-const aj = arcjet({
-  key: process.env.ARCJET_KEY!,
-  characteristics: ["ip.src"],
-  rules: [
-    shield({ mode: "LIVE" }),
-    detectBot({
-      mode: "LIVE",
-      allow: ["CATEGORY:SEARCH_ENGINE"],
-    }),
-    fixedWindow({
-      mode: "LIVE",
-      window: "60s", // 60 second fixed window
-      max: 2, // allow a maximum of 2 requests
-    }),
-  ],
-});
+import { arcjetMiddleware } from "../utils";
 
 export async function GET(req: Request) {
-  const decision = await aj.protect(req); // Deduct 5 tokens from the bucket
+  const decision = await arcjetMiddleware.protect(req);
 
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
