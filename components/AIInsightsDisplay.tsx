@@ -18,8 +18,10 @@ import {
   Instagram,
   ChevronDown,
   ChevronUp,
+  Loader2,
+  InfoIcon,
 } from "lucide-react";
-import { AIGeneratedResponse, AnalyzedData } from "@/lib/types";
+import { AnalyzedData } from "@/lib/types";
 import useAIQuery from "@/hooks/useAIQuery";
 import { Accordion } from "./ui/accordion";
 import {
@@ -37,7 +39,7 @@ export default function AIInsightsDisplay({
 }: AIInsightsDisplayProps) {
   const [expandedSections, setExpandedSections] = useState<string[]>([]);
 
-  const { data, isLoading } = useAIQuery(userData);
+  const { data, isLoading, error: queryError } = useAIQuery(userData);
 
   const toggleSection = (section: string) => {
     setExpandedSections((prev) =>
@@ -49,10 +51,34 @@ export default function AIInsightsDisplay({
 
   const isExpanded = (section: string) => expandedSections.includes(section);
 
-  if (!data) return;
+  if (isLoading)
+    return (
+      <Card className="w-full min-h-[100px] p-8 bg-gray-800 border-gray-700 text-white motion-preset-fade-lg">
+        <div className="flex flex-col gap-6 items-center justify-center h-full w-full">
+          <p className="text-xl font-semibold">Generating AI Insights</p>
+          <Loader2 className="w-10 h-10 stroke-[3px] animate-spin" />
+        </div>
+      </Card>
+    );
+
+  if (queryError || !data) {
+    return (
+      <Card className="w-full min-h-[100px] p-8 bg-gray-800 border-gray-700 motion-preset-fade-lg">
+        <div className="flex flex-col gap-6 items-center text-red-600 justify-center h-full w-full">
+          <InfoIcon className="w-10 h-10" />
+          <p className="text-xl font-semibold">
+            {(queryError as any).message ||
+              "Unknown Error While generating insights"}
+          </p>
+        </div>
+      </Card>
+    );
+  }
+
+  const year = new Date().getFullYear();
 
   return (
-    <Card className="w-full bg-gray-800 border-gray-700 text-white">
+    <Card className="w-full bg-gray-800 border-gray-700 text-white motion-preset-fade-lg">
       <CardHeader>
         <CardTitle className="text-3xl font-bold text-center">
           <Sparkles className="inline-block mr-2 text-yellow-400" />
@@ -66,12 +92,12 @@ export default function AIInsightsDisplay({
         <Accordion
           key={userData.user.username}
           type="multiple"
-          defaultValue={["2024 Summary"]}
           className="space-y-6"
         >
           {!!data.summary?.trim() && (
             <Section
-              title="2024 Summary"
+              key={userData.user.username}
+              title={`${year} Summary`}
               content={data.summary}
               isExpanded={isExpanded("summary")}
               onToggle={() => toggleSection("summary")}
@@ -80,6 +106,7 @@ export default function AIInsightsDisplay({
 
           {!!data.YearlyOverview?.trim() && (
             <Section
+              key={userData.user.username}
               title="Yearly Overview"
               content={data.YearlyOverview}
               isExpanded={isExpanded("overview")}
@@ -88,6 +115,7 @@ export default function AIInsightsDisplay({
           )}
           {!!data.mostSignificantAchievement?.trim() && (
             <Section
+              key={userData.user.username}
               title="Most Significant Achievement"
               content={data.mostSignificantAchievement}
               isExpanded={isExpanded("achievement")}
@@ -96,6 +124,7 @@ export default function AIInsightsDisplay({
           )}
           {!!data.areasForPotentialGrowth?.trim() && (
             <Section
+              key={userData.user.username}
               title="Areas for Growth"
               content={data.areasForPotentialGrowth}
               isExpanded={isExpanded("growth")}
@@ -103,6 +132,22 @@ export default function AIInsightsDisplay({
             />
           )}
         </Accordion>
+
+        <Card className="bg-gray-800 border-gray-700 text-white">
+          <CardHeader>
+            <CardTitle className="text-xl font-semibold">
+              Your Coding Style
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <StyleCard
+              title={`${new Date().getFullYear()} Vibe`}
+              content={data.userStyle.vibe}
+            />
+            <StyleCard title="Superpower" content={data.userStyle.superpower} />
+            <StyleCard title="Top Quote" content={data.userStyle.topQuote} />
+          </CardContent>
+        </Card>
 
         <Card className="bg-gray-800 border-gray-700 text-white">
           <CardHeader>
@@ -154,11 +199,11 @@ export default function AIInsightsDisplay({
           </CardContent>
         </Card>
 
-        <div className="space-y-4 text-center">
-          <p className="text-lg font-medium text-gray-300">
+        <div className="space-y-6 text-center">
+          <p className="text-sm font-medium text-gray-300">
             {data.encouragementText}
           </p>
-          <p className="text-xl font-bold text-yellow-400">
+          <p className="text-sm font-bold text-yellow-400">
             {data.motivationMessage}
           </p>
         </div>
@@ -198,7 +243,7 @@ function Section({
         </AccordionTrigger>
         {isExpanded && (
           <CardContent className="p-0 px-4 pb-4 pt-1">
-            <AccordionContent>
+            <AccordionContent className="motion-preset-fade-md">
               <p className="text-gray-300 leading-relaxed">{content}</p>
             </AccordionContent>
           </CardContent>
@@ -210,12 +255,10 @@ function Section({
 
 function StyleCard({ title, content }: { title: string; content: string }) {
   return (
-    <Card className="bg-gray-700 border-gray-700 text-white">
-      <CardHeader>
-        <CardTitle className="text-lg font-medium">{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-gray-300">{content}</p>
+    <Card className="bg-gray-700 border-gray-700 text-white motion-preset-fade-md">
+      <CardContent className="p-4 space-y-2">
+        <div className="text-lg font-medium capitalize">{title}</div>
+        <p className="text-sm text-gray-300 capitalize">{content}</p>
       </CardContent>
     </Card>
   );
@@ -229,12 +272,12 @@ function SocialPost({
   content: string;
 }) {
   return (
-    <Card className="bg-gray-800 border-gray-700 text-white">
+    <Card className="bg-gray-800 border-gray-700 text-white motion-preset-fade-md">
       <CardHeader>
         <CardTitle className="text-lg font-medium">{platform} Post</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="text-sm text-gray-300">{content}</p>
+        <p className="text-sm text-gray-300 leading-relaxed">{content}</p>
         <Button className="mt-4 w-full">Share on {platform}</Button>
       </CardContent>
     </Card>

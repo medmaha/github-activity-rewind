@@ -30,11 +30,13 @@ export default function HighlightsCard({ userData }: Props) {
     { icon: Star, label: "Stars Earned", value: userData.starsEarned },
   ];
 
+  const year = new Date().getFullYear();
+
   return (
     <Card className="bg-gray-800 text-white border-gray-700">
       <CardHeader>
         <CardTitle className="text-2xl font-bold text-center">
-          2024 GitHub Highlights
+          {year} GitHub Highlights
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -46,7 +48,7 @@ export default function HighlightsCard({ userData }: Props) {
             alt={userData.user.name}
             width={100}
             height={100}
-            className="rounded-full border border-muted-foreground"
+            className="rounded-full border border-muted-foreground motion-duration-2000 motion-preset-confetti"
           />
         </div>
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">

@@ -11,7 +11,7 @@ export const arcjetMiddlewareAI = arcjet({
     }),
     fixedWindow({
       mode: "LIVE",
-      window: "600s", // 10 minutes fixed window
+      window: "300s", // 5 minutes fixed window
       max: 1, // allow a maximum of 2 requests
     }),
   ],
@@ -38,9 +38,7 @@ export async function protectRequest() {
   const decision = await arcjetMiddlewareAI.protect(req);
   if (decision.isDenied()) {
     if (decision.reason.isRateLimit()) {
-      throw new Error(
-        "You've hit the rate limit please wait for +" + decision.reason.window
-      );
+      throw new Error("You've hit the rate limit please try again in 5mins");
     } else if (decision.reason.isBot()) {
       throw new Error("No bots allowed");
     } else {

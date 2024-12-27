@@ -141,10 +141,14 @@ export default function AchievementBadges({
 
   if (!_achievements.length) return null;
 
+  const year = new Date().getFullYear();
+
   return (
-    <Card className="bg-gray-800 text-white border-gray-700">
+    <Card className="bg-gray-800 text-white border-gray-700 motion-preset-fade-md">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">2024 Achievements</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          {year} Achievements
+        </CardTitle>
         <CardDescription>
           Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius ex
           corrupti autem at recusandae quasi?
@@ -158,7 +162,7 @@ export default function AchievementBadges({
                 <TooltipTrigger>
                   <div
                     className={`
-                      relative p-4 rounded-lg 
+                      relative p-4 rounded-lg motion-preset-fade-sm
                       ${achievement.earned ? achievement.color : "bg-gray-700"} 
                       ${!achievement.earned && "opacity-50"}
                       transition-all duration-300 hover:scale-105
@@ -177,7 +181,7 @@ export default function AchievementBadges({
                     </div>
                   </div>
                 </TooltipTrigger>
-                <TooltipContent>
+                <TooltipContent className="motion-preset-focus">
                   <p>{achievement.description}</p>
                 </TooltipContent>
               </Tooltip>

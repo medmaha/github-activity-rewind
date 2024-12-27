@@ -2,7 +2,6 @@
 
 import { Octokit } from "@octokit/rest";
 
-import { readFileSync, writeFileSync } from "node:fs";
 import { AnalyzedData } from "./types";
 import { protectRequest } from "./req.middleware";
 
@@ -13,18 +12,23 @@ export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
   // const savedData = readFileSync("db.json", "utf-8");
   // const parsedData: any[] = JSON.parse(savedData || "[]") || [];
 
+  let notFound = false;
   try {
+    const decision = await protectRequest();
     // const cachedData = parsedData.find(
     //   (data: any) => data.analysis.user.username === username
     // );
     // if (cachedData) {
     //   return cachedData.analysis;
     // }
-    protectRequest();
     // throw new Error("");
     const [user, repos, events] = await Promise.all([
-      octokit.users.getByUsername({ username }),
-
+      (async () => {
+        const user = await octokit.users.getByUsername({ username });
+        if (user.status === 200) return user;
+        notFound = true;
+        throw Error("This username does not exists");
+      })(),
       octokit.repos.listForUser({
         username,
         sort: "updated",

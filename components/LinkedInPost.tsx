@@ -9,22 +9,6 @@ type Props = {
 };
 
 export default function LinkedInPost({ userData }: Props) {
-  const generatePost = () => {
-    // This is a placeholder. We'll implement the actual AI-generated post later.
-    return `🚀 Exciting news! I've just generated my GitHub Year in Review for 2024, and the results are in! 🎉
-
-This year, I've made ${userData.totalContributions} contributions, gained ${userData.followers} new followers, and worked on ${userData.publicRepos} public repositories. My top languages were JavaScript, Python, and TypeScript.
-
-Some highlights:
-• Completed a major project: [Project Name]
-• Contributed to [X] open-source projects
-• Earned [Y] stars across my repositories
-
-I'm grateful for the amazing developer community and looking forward to even more coding adventures in 2025! 💻✨
-
-#GitHubRewind #CodingJourney #SoftwareDevelopment`;
-  };
-
   const aiResponse = useAIQuery(userData);
 
   // if (typeof window != "undefined" && aiResponse.data)

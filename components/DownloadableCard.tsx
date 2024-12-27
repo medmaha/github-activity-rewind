@@ -76,9 +76,10 @@ export default function DownloadableCard({
 
   const handleDownload = () => {
     if (!canvasRef.current) return;
+    const year = new Date().getFullYear();
 
     const link = document.createElement("a");
-    link.download = `${username}-github-rewind-2024.png`;
+    link.download = `${username}-github-rewind-${year}.png`;
     link.href = canvasRef.current.toDataURL("image/png");
     link.click();
   };

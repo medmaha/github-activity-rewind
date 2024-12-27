@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { fetchGitHubData } from "@/lib/github";
 import { Loader2, GithubIcon } from "lucide-react";
 import { AnalyzedData } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 const DetailsLazy = lazy(() => import("./Details"));
 
@@ -50,7 +51,10 @@ export default function GitHubForm() {
           </div>
           <Button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105"
+            className={cn(
+              "w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white motion-duration-2000 font-semibold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:scale-105",
+              userData && "motion-preset-confetti"
+            )}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -65,8 +69,8 @@ export default function GitHubForm() {
         </form>
       </div>
       {error && (
-        <div className="mt-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-md">
-          {error}
+        <div className="max-w-lg mx-auto mt-6 p-4 bg-destructive/10 border border-destructive text-destructive rounded-md">
+          <p className="text-center">{error}</p>
         </div>
       )}
       {userData && (
