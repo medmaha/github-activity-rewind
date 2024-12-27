@@ -7,7 +7,9 @@ import { protectRequest } from "./req.middleware";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
+export async function fetchGitHubData(
+  username: string
+): Promise<AnalyzedData | { err: string }> {
   // Dev Only
   // const savedData = readFileSync("db.json", "utf-8");
   // const parsedData: any[] = JSON.parse(savedData || "[]") || [];
@@ -68,12 +70,12 @@ export async function fetchGitHubData(username: string): Promise<AnalyzedData> {
     // writeFileSync("db.json", JSON.stringify(parsedData));
 
     return analyzedData;
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Error! ${error.message}`);
-    } else {
-      throw new Error("An unknown error occurred while fetching GitHub data");
-    }
+  } catch (error: any) {
+    return {
+      err: `Error! ${
+        error.message || "An unknown error occurred while fetching GitHub data"
+      }`,
+    };
   }
 }
 

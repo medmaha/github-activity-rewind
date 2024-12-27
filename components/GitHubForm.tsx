@@ -22,9 +22,11 @@ export default function GitHubForm() {
     setError(null);
     try {
       const data = await fetchGitHubData(username.trim());
-      setUserData(data);
+      if ((data as any).err) {
+        throw new Error((data as any).err);
+      }
+      setUserData(data as any);
     } catch (error) {
-      console.error("Error fetching GitHub data:", error);
       setError(
         error instanceof Error ? error.message : "An unknown error occurred"
       );
