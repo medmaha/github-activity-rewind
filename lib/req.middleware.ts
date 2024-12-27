@@ -11,8 +11,8 @@ export const arcjetMiddlewareAI = arcjet({
     }),
     fixedWindow({
       mode: "LIVE",
-      window: "300s", // 5 minutes fixed window
-      max: 3, // allow a maximum of 2 requests
+      window: "60s", // 5 minutes fixed window
+      max: 2, // allow a maximum of 3 requests
     }),
   ],
 });
