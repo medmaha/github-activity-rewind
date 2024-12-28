@@ -246,7 +246,6 @@ function SocialPost({
     if (copied) return;
 
     window.navigator.clipboard.writeText(contentRef.current?.innerText);
-    toast("Copied");
     setCopied(true);
     setTimeout(() => {
       setCopied(false);
@@ -317,12 +316,15 @@ ${hashtags.map((h) => `#${h}`).join(" ")}
   function cleanPostContent(text: string) {
     // Used a regular expression to find and replace all hashtags
     const regex = /#\w+/g;
-    const mdUrl = /(\[.+\))/g;
+    const markdownUrl = /(\[.+\))/g;
     const placeholders = /(\[.+\])/g;
+    const ourUrl = /(\(?https:\/\/github-r.vercel.app\)?)/gi;
     text = text
       .replace(regex, "")
       .replace(placeholders, "")
-      .replace(mdUrl, "")
+      .replace(markdownUrl, "")
+      .replace(ourUrl, "")
+      .replace(/(\(\))/g, "")
       .replace("https://github-r.vercel.app", "");
     return text.trim();
   }
