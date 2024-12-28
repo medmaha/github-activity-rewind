@@ -362,6 +362,11 @@ ${hashtags.map((h) => `#${h}`).join(" ")}
           className="text-sm text-gray-300 leading-relaxed border focus:mb-4 border-transparent transition-all focus:p-2 rounded-md focus:border-purple-500"
         >
           {cleanPostContent(content)}
+          <br />
+          <br />
+          {getHashtags(content)
+            .map((h) => `#${h}`)
+            .join(" ")}
         </p>
         <div className="flex items-center justify-center gap-5 flex-wrap">
           <Button
