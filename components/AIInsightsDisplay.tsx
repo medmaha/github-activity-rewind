@@ -276,13 +276,13 @@ ${cleanedText}`.trim();
         url = new URL("https://x.com/intent/post");
         url.searchParams.set("text", tContent);
         url.searchParams.set("hashtags", hashtags.join(","));
-
+        break;
       case "LinkedIn":
         const lContent = `
 ${title}
 ${cleanedText}
 
-${hashtags.join(",")}`.trim();
+${hashtags.map((h) => `#${h}`).join(" ")}`.trim();
 
         url = new URL("https://www.linkedin.com/shareArticle");
         url.searchParams.set("text", lContent);
