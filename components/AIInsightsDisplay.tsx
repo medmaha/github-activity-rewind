@@ -11,7 +11,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import {
   Sparkles,
-  MessageCircle,
   Twitter,
   Facebook,
   Instagram,
@@ -29,7 +28,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@radix-ui/react-accordion";
-import { ReactNode, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
@@ -263,15 +262,21 @@ function SocialPost({
     const title = "Github Rewind " + year;
     const text = contentRef.current?.innerText;
     const hashtags = getHashtags(text);
-    const cleanedText = clearHashtags(text);
+    const cleanedText = cleanPostContent(text);
 
     let url: URL | undefined;
 
     switch (platform) {
       case "Twitter":
-        const tContent = `
+        const tContent =
+          `
 ${title}
-${cleanedText}`.trim();
+${cleanedText}
+
+----
+Get yours rewind at https://github-r.vercel.app 
+----
+`.trim() + "\n";
 
         url = new URL("https://x.com/intent/post");
         url.searchParams.set("text", tContent);
@@ -282,7 +287,12 @@ ${cleanedText}`.trim();
 ${title}
 ${cleanedText}
 
-${hashtags.map((h) => `#${h}`).join(" ")}`.trim();
+----
+Get yours rewind at https://github-r.vercel.app 
+----
+
+${hashtags.map((h) => `#${h}`).join(" ")}
+`.trim();
 
         url = new URL("https://www.linkedin.com/shareArticle");
         url.searchParams.set("text", lContent);
@@ -303,10 +313,14 @@ ${hashtags.map((h) => `#${h}`).join(" ")}`.trim();
     link.remove();
   }
 
-  function clearHashtags(text: string) {
+  // Attempts to cleaned the AI generated for content for social medial posts
+  function cleanPostContent(text: string) {
     // Used a regular expression to find and replace all hashtags
     const regex = /#\w+/g;
-    return text.replace(regex, "");
+    const mdUrl = /(\[.+\))/g;
+    const placeholders = /(\[.+\])/g;
+    text = text.replace(regex, "").replace(placeholders, "").replace(mdUrl, "");
+    return text.trim();
   }
 
   function getHashtags(text: string) {
@@ -324,11 +338,6 @@ ${hashtags.map((h) => `#${h}`).join(" ")}`.trim();
 
     return hashtags;
   }
-
-  // Example usage:
-  const text = "This is an example #hashtag with #multiple #hashtags.";
-  const extractedHashtags = getHashtags(text);
-  console.log(extractedHashtags); // Output: ["hashtag", "multiple", "hashtags"]
 
   const sharable = ["LinkedIn", "Twitter"].includes(platform);
 
