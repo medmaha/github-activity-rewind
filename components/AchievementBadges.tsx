@@ -115,7 +115,7 @@ export default function AchievementBadges({
           ? userData.topRepositories[0].stars + " stars"
           : "unstarred"
       }`,
-      earned: userData.topRepositories.length > 0,
+      earned: userData.topRepositories.some((r) => Number(r.stars) > 0),
       color: "bg-yellow-500",
     },
     // Newest Repository Achievement
