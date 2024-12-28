@@ -11,7 +11,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Github Rewind | Intrasoft",
+  title: "Rewind-Github | Intrasoft",
   description:
     "Get your own Github rewind card with AI insights? This fun and interactive tool allows you to showcase your coding journey in 2024",
 };

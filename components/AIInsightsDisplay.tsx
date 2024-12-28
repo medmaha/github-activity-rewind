@@ -260,7 +260,7 @@ function SocialPost({
     const year = new Date().getFullYear();
     const title = "Github Rewind " + year;
     const text = contentRef.current?.innerText;
-    const hashtags = getHashtags(text);
+    const hashtags = getHashtags(text).map((h) => h.toLowerCase());
     const cleanedText = cleanPostContent(text);
 
     let url: URL | undefined;
