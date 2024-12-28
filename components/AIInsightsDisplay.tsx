@@ -243,7 +243,7 @@ function SocialPost({
   const contentRef = useRef<HTMLParagraphElement>(null);
 
   function copyContent() {
-    if (platform !== "LinkedIn") return;
+    if (!sharable) return;
     if (!contentRef.current) return;
     if (copied) return;
 
@@ -256,33 +256,81 @@ function SocialPost({
   }
 
   function postContent() {
-    function encodeURIComponentSafe(text: string) {
-      return text;
-      // return encodeURIComponent(text)
-      //   .replace(/%20/g, "+") // Replace spaces with '+' (common practice)
-      //   .replace(/\*/g, "%2A") // Encode '*' specifically
-      //   .replace(/\//g, "%2F"); // Encode '/' specifically
-    }
     if (!contentRef.current) return;
     if (copied) return;
 
     const year = new Date().getFullYear();
     const title = "Github Rewind " + year;
-    const text = encodeURIComponentSafe(contentRef.current?.innerText);
+    const text = contentRef.current?.innerText;
+    const hashtags = getHashtags(text);
+    const cleanedText = clearHashtags(text);
 
-    const url = new URL("https://www.linkedin.com/shareArticle");
-    url.searchParams.set("text", text);
-    url.searchParams.set("title", title);
+    let url: URL | undefined;
 
-    const a = document.createElement("a");
+    switch (platform) {
+      case "Twitter":
+        const tContent = `
+${title}
+${cleanedText}`.trim();
 
-    a.target = "_blank";
-    a.rel = "noopener noreferrer";
-    a.href = url.toString();
+        url = new URL("https://x.com/intent/post");
+        url.searchParams.set("text", tContent);
+        url.searchParams.set("hashtags", hashtags.join(","));
 
-    a.click();
-    a.remove();
+      case "LinkedIn":
+        const lContent = `
+${title}
+${cleanedText}
+
+${hashtags.join(",")}`.trim();
+
+        url = new URL("https://www.linkedin.com/shareArticle");
+        url.searchParams.set("text", lContent);
+        break;
+      default:
+        break;
+    }
+
+    if (!url) return;
+
+    const link = document.createElement("a");
+
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.href = url.toString();
+
+    link.click();
+    link.remove();
   }
+
+  function clearHashtags(text: string) {
+    // Used a regular expression to find and replace all hashtags
+    const regex = /#\w+/g;
+    return text.replace(regex, "");
+  }
+
+  function getHashtags(text: string) {
+    // Used a regular expression to find all hashtags
+    const regex = /#\w+/g;
+    const matches = text.match(regex);
+
+    // If no hashtags are found, return an empty array
+    if (!matches) {
+      return [];
+    }
+
+    // Extract the hashtag text (remove the leading #)
+    const hashtags = matches.map((match) => match.substring(1));
+
+    return hashtags;
+  }
+
+  // Example usage:
+  const text = "This is an example #hashtag with #multiple #hashtags.";
+  const extractedHashtags = getHashtags(text);
+  console.log(extractedHashtags); // Output: ["hashtag", "multiple", "hashtags"]
+
+  const sharable = ["LinkedIn", "Twitter"].includes(platform);
 
   return (
     <Card className="bg-gray-800 border-gray-700 text-white motion-preset-fade-md">
@@ -313,7 +361,7 @@ function SocialPost({
             {copied && "Copied"}
             {!copied && "Copy Post"}
           </Button>
-          {platform === "LinkedIn" && (
+          {sharable && (
             <Button
               onClick={postContent}
               className={cn("mt-4 flex-1 inline-flex gap-3")}
