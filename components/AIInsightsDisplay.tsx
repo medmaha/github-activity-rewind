@@ -242,7 +242,6 @@ function SocialPost({
   const contentRef = useRef<HTMLParagraphElement>(null);
 
   function copyContent() {
-    if (!sharable) return;
     if (!contentRef.current) return;
     if (copied) return;
 
@@ -255,6 +254,7 @@ function SocialPost({
   }
 
   function postContent() {
+    if (!sharable) return;
     if (!contentRef.current) return;
     if (copied) return;
 
@@ -319,7 +319,11 @@ ${hashtags.map((h) => `#${h}`).join(" ")}
     const regex = /#\w+/g;
     const mdUrl = /(\[.+\))/g;
     const placeholders = /(\[.+\])/g;
-    text = text.replace(regex, "").replace(placeholders, "").replace(mdUrl, "");
+    text = text
+      .replace(regex, "")
+      .replace(placeholders, "")
+      .replace(mdUrl, "")
+      .replace("https://github-r.vercel.app", "");
     return text.trim();
   }
 
@@ -355,7 +359,7 @@ ${hashtags.map((h) => `#${h}`).join(" ")}
           ref={contentRef}
           className="text-sm text-gray-300 leading-relaxed border focus:mb-4 border-transparent transition-all focus:p-2 rounded-md focus:border-purple-500"
         >
-          {content}
+          {cleanPostContent(content)}
         </p>
         <div className="flex items-center justify-center gap-5 flex-wrap">
           <Button
