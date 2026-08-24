@@ -1,17 +1,17 @@
-import { Github, Twitter, Linkedin } from "lucide-react";
+import { LinkIcon } from "lucide-react";
 import Link from "next/link";
 
 export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-6 bg-gradient-to-br to-gray-900 from-gray-800">
+    <footer className="text-card-foreground py-6 bg-linear-to-br to-background from-card-800">
       <div className="flex space-x-4 items-center justify-center">
         <Link
-          href="https://linkedin.com/in/mtouray101"
+          href="https://linkedin.com/in/medmaha"
           target="_blank"
           rel="noopener noreferrer"
-          className="hover:text-white transition-colors"
+          className="hover:text-foreground text-foreground/90 transition-colors"
         >
-          <Linkedin className="w-6 h-6" />
+          <LinkIcon className="w-6 h-6" />
           <span className="sr-only">LinkedIn</span>
         </Link>
       </div>

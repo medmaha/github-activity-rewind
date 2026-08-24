@@ -29,11 +29,11 @@ function toSummary(data: RewindData): InsightsSummary {
   };
 }
 
-type AIInsightsDisplayProps = {
+type InsightsWidgetsProps = {
   data: RewindData
 }
 
-export default function AIInsightsDisplay({ data }: AIInsightsDisplayProps) {
+export default function InsightsWidgets({ data }: InsightsWidgetsProps) {
   const { insights, insightsStatus, insightsError, startInsights, setInsights, setInsightsError } =
     useRewindStore();
   const loading = insightsStatus === "loading";

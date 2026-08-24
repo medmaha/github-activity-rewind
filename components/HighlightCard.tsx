@@ -72,7 +72,7 @@ async function loadAvatar(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-export default function DownloadableCard({
+export default function HighlightCard({
   data,
   insights,
 }: {
