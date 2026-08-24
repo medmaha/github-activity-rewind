@@ -3,9 +3,9 @@
 import { Octokit } from "@octokit/rest";
 
 import { AnalyzedData } from "./types";
-import { protectRequest } from "./req.middleware";
 import { after } from "next/server";
 import { recordUserActivity } from "./record";
+import { enforceRateLimit } from "./rate-limit.server";
 
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
@@ -18,7 +18,7 @@ export async function fetchGitHubData(
 
   let notFound = false;
   try {
-    await protectRequest();
+    await enforceRateLimit("api");
     // const cachedData = parsedData.find(
     //   (data: any) => data.analysis.user.username === username
     // );
@@ -76,9 +76,8 @@ export async function fetchGitHubData(
     return analyzedData;
   } catch (error: any) {
     return {
-      err: `Error! ${
-        error?.message || "An unknown error occurred while fetching GitHub data"
-      }`,
+      err: `Error! ${error?.message || "An unknown error occurred while fetching GitHub data"
+        }`,
     };
   }
 }
