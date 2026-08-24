@@ -1,54 +1,60 @@
-"use server";
+import type { InsightsSummary } from "./rewind-schemas";
+import type { AiInsights } from "./rewind-types";
+
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { AnalyzedData } from "./types";
-import { getAiPrompt } from "./aiPrompt";
+
+const schemaHint = `
+You are a senior engineering manager writing a concise, professional developer year-in-review. Never invent numbers that are not in the data.
+Return STRICT JSON only, matching:
+{
+  "personaTitle": string (max 40 chars, e.g. "The Systems Craftsman"),
+  "headline": string (max 90 chars),
+  "yearlyOverview": string (2-4 sentences, professional, factual, no hype),
+  "significantAchievements": string[] (3-5 items, each max 130 chars),
+  "areasOfGrowth": string[] (3-4 items, each max 130 chars, constructive),
+  "codingStyle": string (2-3 sentences inferred from languages, repo mix and cadence),
+  "shareCaption": string (max 260 chars, LinkedIn-ready, first person, 1-2 emojis max)
+}`;
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
-export async function generateAIInsights(userData: AnalyzedData) {
-  try {
-    const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
-    const prompt = getAiPrompt(userData);
 
+export async function generateAIInsights(summary: InsightsSummary): Promise<AiInsights> {
+  const apiKey = process.env["LLM_API_KEY"];
+  if (!apiKey) throw new Error("AI is not configured for this project.");
+
+  const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
+  const prompt = `System: ${schemaHint}\n\n User: Developer GitHub metrics for ${summary.year}:\n${JSON.stringify(summary)}`
+
+  try {
     const result = await model.generateContent(prompt);
     const response = result.response;
-    const text = response.text();
+    const raw = response.text();
+    const jsonText = raw.slice(raw.indexOf("{"), raw.lastIndexOf("}") + 1);
 
-    const parsedData = JSON.parse(text.replace(/(```)(json)?/gi, ""));
-    return parsedData;
-  } catch (error) {
-    console.error("Error generating AI insights:", error);
-    throw error;
+    let parsed: Partial<AiInsights>;
+    try {
+      parsed = JSON.parse(jsonText) as Partial<AiInsights>;
+    } catch {
+      throw new Error("AI returned an unexpected response. Please try again.");
+    }
+
+    const list = (value: unknown, fallback: string[]) =>
+      Array.isArray(value) ? value.filter((v): v is string => typeof v === "string").slice(0, 5) : fallback;
+
+    return {
+      personaTitle: parsed.personaTitle?.slice(0, 60) ?? "The Builder",
+      headline: parsed.headline?.slice(0, 140) ?? `A year of shipping on GitHub`,
+      yearlyOverview: parsed.yearlyOverview ?? "",
+      significantAchievements: list(parsed.significantAchievements, []),
+      areasOfGrowth: list(parsed.areasOfGrowth, []),
+      codingStyle: parsed.codingStyle ?? "",
+      shareCaption: (parsed.shareCaption ?? "").slice(0, 400),
+    };
+  } catch (response: any) {
+    console.error(`AI gateway failed [${response.status}]: ${summary}`);
+    if (response.status === 429) throw new Error("AI is busy right now. Please retry in a moment.");
+    if (response.status === 402) throw new Error("AI credits exhausted for this workspace.");
+    throw new Error(`AI request failed (${response.status}).`);
   }
 }
-
-const data = {
-  summary:
-    "This year has been marked by significant contributions to the `procurement-frontend` repository, showcasing a commitment to building robust and feature-rich applications. There's been consistent pushing of code, with a particular focus on refining UI, adding new features like the suppliers page, and enhancing the overall application architecture. The variety of commit messages indicates work across different areas of the application. Additionally there are contributions across different repositories.",
-  YearlyOverview:
-    "The year's activity includes numerous `PushEvent` actions, indicating frequent updates to the code base. Key areas of focus appear to be adding new modules, updating dependencies, refactoring UI components, and setting up authentication and onboarding features. The commits also highlight work on approval workflows and document generation. The diverse language usage also demonstrates versatility in programming.",
-  mostSignificantAchievement:
-    "The most significant achievement is the completion of the organization module MVP, which involved integrating several new dependencies, enhancing layout, improving UI components, and introducing features like PDF export in data tables. This demonstrates the ability to manage and deliver large features effectively.",
-  areasForPotentialGrowth:
-    "While the contributions are impressive, there's potential for growth in areas such as proactive contribution to open source projects beyond personal ones, more detailed commit messages and further exploration of diverse programming languages and technologies to broaden their skillset.",
-  userStyle: {
-    vibe: "A builder who focuses on functionality and continuous improvement.",
-    superpower:
-      "Quickly implementing new features and refactoring existing systems.",
-    topQuote: "Always be building and learning.",
-  },
-  posts: {
-    linkedPost:
-      "Check out my latest Github activity! I've been busy building and pushing new features. Proud of the progress made. #Github #SoftwareDevelopment #OpenSource https://github.com/yourusername",
-    twitterPost:
-      "Diving deep into code! My recent GitHub activity includes new modules, UI enhancements, and more. Excited to share the progress! #CodeLife #TechUpdates https://github.com/yourusername",
-    facebookPost:
-      "Just wrapped up some serious coding sessions! Excited to share my GitHub contributions, including new features and bug fixes. Proud of the progress! #CodingJourney #TechCommunity https://github.com/yourusername",
-    instagramPost:
-      "Behind the scenes of my development work! Checkout my latest Github Activity. 💻✨ #dev #programming #tech https://github.com/yourusername",
-  },
-  encouragementText:
-    "Keep up the great work! Your consistent contributions are making a real difference. Remember, every commit is a step forward!",
-  motivationMessage:
-    "Your dedication to building and improving is inspiring. Keep pushing, learning, and growing!",
-};

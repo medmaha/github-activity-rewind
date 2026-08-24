@@ -1,18 +1,13 @@
 "use server";
-import { request } from "@arcjet/next";
-import { arcjetMiddlewareFeedback } from "./req.middleware";
 import DB from "./db";
 import { feedbacks } from "./db/schema";
+import { enforceRateLimit } from "./rate-limit.server";
 
 export async function createFeedback(data: typeof feedbacks.$inferInsert) {
-	const req = await request();
-	const decision = await arcjetMiddlewareFeedback.protect(req);
-	if (decision.isDenied()) {
-		if (decision.reason.isRateLimit()) {
-			throw new Error("You've hit the rate limit please try again in 2mins");
-		} else {
-			throw new Error("Forbidden");
-		}
+	try {
+		await enforceRateLimit("feedback")
+	} catch (error: any) {
+		throw new Error(error.message);
 	}
 	await DB.insert(feedbacks).values(data);
 	return true;
