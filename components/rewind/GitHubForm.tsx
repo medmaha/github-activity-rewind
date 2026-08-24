@@ -2,7 +2,7 @@ import { useState } from "react";
 import { GitBranch, KeyRound, Loader2, Search, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-import { GhButton, GhInput, Chip } from "./rewind/primitives"
+import { GhButton, GhInput, Chip } from "./primitives"
 import { analyzeGithub } from "@/lib/rewind.actions";
 import { useRewindStore } from "@/store/rewind-store";
 

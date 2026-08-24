@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Download, ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Panel, PanelHeader, GhButton, Chip } from "./rewind/primitives";
+import { Panel, PanelHeader, GhButton, Chip } from "./primitives";
 import type { AiInsights, RewindData } from "@/lib/rewind-types";
 
 const W = 1200;
@@ -72,7 +72,7 @@ async function loadAvatar(url: string): Promise<HTMLImageElement | null> {
   });
 }
 
-export default function HighlightCard({
+export function HighlightCard({
   data,
   insights,
 }: {

@@ -1,7 +1,7 @@
 import { Brain, Loader2, Sparkles, TrendingUp, Trophy, Wand2 } from "lucide-react";
 import { toast } from "sonner";
 
-import { Panel, PanelHeader, Chip, GhButton } from "./rewind/primitives";
+import { Panel, PanelHeader, Chip, GhButton } from "./primitives";
 import { getAiInsights } from "@/lib/rewind.actions";
 import type { InsightsSummary } from "@/lib/rewind-schemas";
 import type { RewindData } from "@/lib/rewind-types";
@@ -29,11 +29,7 @@ function toSummary(data: RewindData): InsightsSummary {
   };
 }
 
-type InsightsWidgetsProps = {
-  data: RewindData
-}
-
-export default function InsightsWidgets({ data }: InsightsWidgetsProps) {
+export function InsightsPanel({ data }: { data: RewindData }) {
   const { insights, insightsStatus, insightsError, startInsights, setInsights, setInsightsError } =
     useRewindStore();
   const loading = insightsStatus === "loading";
