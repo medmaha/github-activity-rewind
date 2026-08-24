@@ -301,6 +301,7 @@ export async function buildRewind(
       .slice(0, 6),
     monthly: buildMonthly(events, rawRepos, year),
     notes,
+    events
   };
 
   return { ...base, achievements: buildAchievements(base) };

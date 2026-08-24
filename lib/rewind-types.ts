@@ -72,6 +72,7 @@ export type RewindData = {
   monthly: MonthlyPoint[];
   achievements: Achievement[];
   notes: string[];
+  events: any
 };
 
 export type AiInsights = {
