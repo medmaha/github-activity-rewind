@@ -19,7 +19,7 @@ Return STRICT JSON only, matching:
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 
-export async function generateAIInsights(summary: InsightsSummary): Promise<AiInsights> {
+export async function generateInsights(summary: InsightsSummary): Promise<AiInsights> {
   const apiKey = process.env["LLM_API_KEY"];
   if (!apiKey) throw new Error("AI is not configured for this project.");
 
