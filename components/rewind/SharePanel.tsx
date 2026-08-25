@@ -3,7 +3,7 @@ import { Check, Copy, ExternalLink, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
 import { Panel, PanelHeader, GhButton, Chip } from "./primitives";
-import { PLATFORMS, buildShareText, shareUrl, type Platform } from "@/lib/share";
+import { PLATFORMS, buildShareText, shareUrl, type Platform } from "@/lib/rewind-share";
 import type { AiInsights, RewindData } from "@/lib/rewind-types";
 import { cn } from "@/lib/utils";
 

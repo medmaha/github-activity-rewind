@@ -2,7 +2,7 @@ import { Brain, Loader2, Sparkles, TrendingUp, Trophy, Wand2 } from "lucide-reac
 import { toast } from "sonner";
 
 import { Panel, PanelHeader, Chip, GhButton } from "./primitives";
-import { getAiInsights } from "@/lib/rewind.actions";
+import { getAiInsights } from "@/lib/rewind-actions";
 import type { InsightsSummary } from "@/lib/rewind-schemas";
 import type { RewindData } from "@/lib/rewind-types";
 import { useRewindStore } from "@/store/rewind-store";

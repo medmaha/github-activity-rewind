@@ -3,7 +3,7 @@ import { GitBranch, KeyRound, Loader2, Search, ShieldCheck } from "lucide-react"
 import { toast } from "sonner";
 
 import { GhButton, GhInput, Chip } from "./primitives";
-import { analyzeGithub } from "@/lib/rewind.actions";
+import { analyzeGithub } from "@/lib/rewind-actions";
 import { useRewindStore } from "@/store/rewind-store";
 
 const YEARS = Array.from({ length: 6 }, (_, i) => new Date().getUTCFullYear() - i);
