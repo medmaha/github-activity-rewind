@@ -1,44 +1,25 @@
-import { LinkIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import GithubIconLink from "./GithubIconLink";
+import { ExternalLink } from "lucide-react";
 
 export function Footer() {
   return (
     <footer className="text-card-foreground py-6 bg-linear-to-br to-background from-card-800">
-      <div className="flex space-x-4 items-center justify-center">
-        <Link
-          href="https://linkedin.com/in/medmaha"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-foreground text-foreground/90 transition-colors"
-        >
-          <LinkIcon className="w-6 h-6" />
-          <span className="sr-only">LinkedIn</span>
-        </Link>
-      </div>
-      <div className="container mx-auto px-4">
-        <div className="mt-6 text-center text-sm">
-          <p>
-            &copy; {new Date().getFullYear()} GitHub Rewind. All rights
-            reserved. offered by{" "}
-            <a
-              href="https://linkedin.com/in/mtouray101"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              <strong>Touray Mahammed</strong>
-            </a>
-          </p>
-          <div className="mt-2">
-            <Link href="#" className="hover:text-white transition-colors">
-              Privacy Policy
-            </Link>
-            <span className="mx-2">|</span>
-            <Link href="#" className="hover:text-white transition-colors">
-              Terms of Service
-            </Link>
+      <div className="flex items-center justify-center">
+        <GithubIconLink className="w-auto px-2 gap-4">
+          <div className="flex gap-2 items-center">
+            <small className="underline underline-offset-2 text-black/70 text-[12px]">
+              medmaha/github-activity-rewind
+            </small>
+            <ExternalLink className="w-3 h-3 text-black/70 text-[12px]" />
           </div>
-        </div>
+        </GithubIconLink>
+      </div>
+      <div className="container flex items-center justify-center px-4 mt-4">
+        <p>
+          &copy; {new Date().getFullYear()}. All rights Reserved
+        </p>
       </div>
     </footer>
   );

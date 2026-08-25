@@ -37,7 +37,7 @@ export function InsightsPanel({ data }: { data: RewindData }) {
   async function generate() {
     startInsights();
     try {
-      const result = await getAiInsights({ data: { summary: toSummary(data) } });
+      const result = await getAiInsights({ summary: toSummary(data) });
       setInsights(result);
       toast.success("AI insights generated");
     } catch (error) {
@@ -97,7 +97,7 @@ export function InsightsPanel({ data }: { data: RewindData }) {
         <PanelHeader icon={<Trophy className="size-4" />} title="Significant achievements" />
         <ul className="space-y-2">
           {insights.significantAchievements.map((item, i) => (
-            <li key={i} className="flex gap-2.5 rounded-lg bg-[var(--elevated)]/60 px-3 py-2 text-sm">
+            <li key={i} className="flex gap-2.5 rounded-lg bg-(--elevated)/60 px-3 py-2 text-sm">
               <span className="font-mono text-xs text-success">{String(i + 1).padStart(2, "0")}</span>
               <span className="text-muted-foreground">{item}</span>
             </li>
@@ -109,7 +109,7 @@ export function InsightsPanel({ data }: { data: RewindData }) {
         <PanelHeader icon={<TrendingUp className="size-4" />} title="Areas of growth" />
         <ul className="space-y-2">
           {insights.areasOfGrowth.map((item, i) => (
-            <li key={i} className="flex gap-2.5 rounded-lg bg-[var(--elevated)]/60 px-3 py-2 text-sm">
+            <li key={i} className="flex gap-2.5 rounded-lg bg-(--elevated)/60 px-3 py-2 text-sm">
               <span className="font-mono text-xs text-attention">→</span>
               <span className="text-muted-foreground">{item}</span>
             </li>

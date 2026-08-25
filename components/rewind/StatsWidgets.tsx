@@ -73,7 +73,7 @@ export function ProfileWidget({ data }: { data: RewindData }) {
       <img
         src={data.profile.avatarUrl}
         alt={`${data.profile.login} avatar`}
-        className="size-16 rounded-2xl border border-[var(--border-strong)] sm:size-20"
+        className="size-16 rounded-2xl border border-border-strong sm:size-20"
         loading="lazy"
       />
       <div className="min-w-0 flex-1">
@@ -120,7 +120,7 @@ export function LanguagesWidget({ data }: { data: RewindData }) {
         <p className="text-sm text-muted-foreground">No language data available.</p>
       ) : (
         <>
-          <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-[var(--elevated)]">
+          <div className="flex h-2.5 w-full overflow-hidden rounded-full bg-elevated">
             {data.languages.map((lang, i) => (
               <div
                 key={lang.name}
@@ -131,7 +131,7 @@ export function LanguagesWidget({ data }: { data: RewindData }) {
           </div>
           <ul className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             {data.languages.slice(0, 8).map((lang, i) => (
-              <li key={lang.name} className="flex items-center justify-between gap-2 rounded-lg bg-[var(--elevated)]/60 px-3 py-2">
+              <li key={lang.name} className="flex items-center justify-between gap-2 rounded-lg bg-(--elevated)/60 px-3 py-2">
                 <span className="flex min-w-0 items-center gap-2 text-sm">
                   <span className="size-2.5 shrink-0 rounded-full" style={{ background: colors[i % colors.length] }} />
                   <span className="truncate">{lang.name}</span>
@@ -180,13 +180,13 @@ export function ReposWidget({ data }: { data: RewindData }) {
     <Panel>
       <PanelHeader icon={<Star className="size-4" />} title="Top repositories" hint="Ranked by stars" />
       <ul className="space-y-2">
-        {data.topRepos.map((repo) => (
+        {data.topRepos.slice(0, 3).map((repo) => (
           <li key={repo.fullName}>
             <a
               href={repo.url}
               target="_blank"
               rel="noreferrer"
-              className="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-[var(--elevated)]/60 px-3 py-2.5 transition-colors hover:border-[var(--border-strong)]"
+              className="flex items-start justify-between gap-3 rounded-xl border border-transparent bg-(--elevated)/60 px-3 py-2.5 transition-colors hover:border-border-strong"
             >
               <span className="min-w-0">
                 <span className="block truncate text-sm font-medium text-primary">{repo.name}</span>
@@ -218,7 +218,7 @@ export function AchievementsWidget({ data }: { data: RewindData }) {
       <PanelHeader icon={<GitMerge className="size-4" />} title="Achievements" hint="Unlocked from your activity" />
       <div className="grid gap-2 sm:grid-cols-2">
         {data.achievements.map((a) => (
-          <div key={a.id} className="rounded-xl border border-[var(--border)] bg-[var(--elevated)]/60 p-3">
+          <div key={a.id} className="rounded-xl border border-border bg-(--elevated)/60 p-3">
             <div className="flex items-center justify-between gap-2">
               <span className="text-sm font-medium">{a.title}</span>
               <Chip tone={tones[a.tier]}>{a.tier}</Chip>

@@ -33,7 +33,7 @@ export default function GitHubForm() {
     }
     startLoading();
     try {
-      const data = await analyzeGithub({ data: { username: username.trim(), year, token: token.trim() } });
+      const data = await analyzeGithub({ username: username.trim(), year, token: token.trim() });
       setData(data);
       toast.success(`Rewind ready for @${data.profile.login}`);
     } catch (error) {
@@ -63,7 +63,7 @@ export default function GitHubForm() {
           value={year}
           onChange={(e) => setYear(Number(e.target.value))}
           aria-label="Year"
-          className="h-10 rounded-lg border border-[var(--border-strong)] bg-[var(--background)]/60 px-3 font-mono text-sm focus-visible:border-primary focus-visible:outline-none"
+          className="h-10 rounded-lg border border-border-strong bg-(--background)/60 px-3 font-mono text-sm focus-visible:border-primary focus-visible:outline-none"
         >
           {YEARS.map((y) => (
             <option key={y} value={y}>
@@ -94,7 +94,7 @@ export default function GitHubForm() {
       </div>
 
       {showToken ? (
-        <div className="mt-3 rounded-xl border border-[var(--border-strong)] bg-[var(--background)]/50 p-3">
+        <div className="mt-3 rounded-xl border border-border-strong bg-(--background)/50 p-3">
           <GhInput
             type="password"
             value={token}
