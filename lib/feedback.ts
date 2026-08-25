@@ -7,20 +7,17 @@ import { headers } from "next/headers";
 import { createHash } from "node:crypto";
 
 export async function createFeedback(data: typeof feedbacks.$inferInsert) {
-	try {
-		await enforceRateLimit("feedback")
-		const ua = userAgent({ headers: await headers() })
-		data.deviceHash = await hashUserAgent(ua)
-		await DB.insert(feedbacks).values(data);
-		return true;
-	} catch (error: any) {
-		throw new Error(error.message);
-	}
+    try {
+        await enforceRateLimit("feedback");
+        const ua = userAgent({ headers: await headers() });
+        data.deviceHash = await hashUserAgent(ua);
+        await DB.insert(feedbacks).values(data);
+        return true;
+    } catch (error: any) {
+        throw new Error(error.message);
+    }
 }
 
-
 async function hashUserAgent(ua: ReturnType<typeof userAgent>): Promise<string> {
-	return createHash("sha256")
-		.update(JSON.stringify(ua))
-		.digest("hex");
+    return createHash("sha256").update(JSON.stringify(ua)).digest("hex");
 }

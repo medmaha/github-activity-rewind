@@ -60,11 +60,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Environment Variables
 
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `ARCJET_KEY` | Yes | Enables Arcjet rate limiting and bot protection. |
-| `GEMINI_API_KEY` | Yes | Enables AI-generated year-in-review insights. |
-| `DATABASE_URL` | No | PostgreSQL connection string used to store feedback submissions. |
+| Variable         | Required | Purpose                                                          |
+| ---------------- | -------- | ---------------------------------------------------------------- |
+| `ARCJET_KEY`     | Yes      | Enables Arcjet rate limiting and bot protection.                 |
+| `GEMINI_API_KEY` | Yes      | Enables AI-generated year-in-review insights.                    |
+| `DATABASE_URL`   | No       | PostgreSQL connection string used to store feedback submissions. |
 
 The GitHub token is not a server environment variable. Users can optionally enter a read-only fine-grained token in the app when they want private repository data included. It is used for the request only and kept in memory.
 
@@ -107,6 +107,6 @@ Contributions are welcome. Please open an issue to discuss a substantial change 
 
 This project is open source under the [MIT License](LICENCE).
 
-
 ## Made With 💖
+
 By [Mahammed Touray](github.com/medmaha)

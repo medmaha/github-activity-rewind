@@ -4,10 +4,10 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 type Props = {
-    className?: string
-    iconClassName?: string
-    children?: ReactNode
-}
+    className?: string;
+    iconClassName?: string;
+    children?: ReactNode;
+};
 
 export default function GithubIconLink({ className, iconClassName, children }: Props) {
     return (
@@ -30,5 +30,5 @@ export default function GithubIconLink({ className, iconClassName, children }: P
             {children}
             <span className="sr-only">Github</span>
         </Link>
-    )
+    );
 }
