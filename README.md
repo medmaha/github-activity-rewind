@@ -36,8 +36,8 @@ GitHub Rewind turns a year of GitHub activity into a visual review of commits, p
 ### Installation
 
 ```bash
-git clone https://github.com/mahammed-toures/github-rewind.git
-cd github-rewind
+git clone https://github.com/mahammed-toures/github-activity-rewind.git
+cd github-activity-rewind
 pnpm install
 ```
 
