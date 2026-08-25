@@ -1,0 +1,8 @@
+node_modules
+.next
+.vercel
+.vscode
+.htmlcov
+out
+coverage
+pnpm-lock.yaml
