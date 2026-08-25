@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Slider } from "@/components/ui/slider";
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
@@ -15,6 +14,7 @@ import { Loader2, Star } from "lucide-react";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { createFeedback } from "@/lib/feedback";
+import { GhButton, GhInput } from "./rewind/primitives";
 
 type Props = {
   isOpen: boolean;
@@ -68,7 +68,7 @@ export default function FeedbackSlider(props: Props) {
         props.onClose(o);
       }}
     >
-      <SheetContent className="max-w-md mx-auto  w-[400px] sm:w-[540px] max-h-[100svh] overflow-hidden overflow-y-auto">
+      <SheetContent className="max-w-md mx-auto  w-100 sm:w-135 max-h-svh overflow-hidden overflow-y-auto">
         <SheetHeader>
           <SheetTitle>Give a Feedback</SheetTitle>
           <SheetDescription>
@@ -93,7 +93,7 @@ export default function FeedbackSlider(props: Props) {
               Subject{" "}
               <small className="ml-2 text-muted-foreground">(Optional)</small>
             </label>
-            <Input
+            <GhInput
               name="subject"
               id="subject"
               placeholder="your subject here"
@@ -109,7 +109,7 @@ export default function FeedbackSlider(props: Props) {
               required
               minLength={10}
               maxLength={500}
-              className="max-h-[200px]"
+              className="max-h-50"
               placeholder="write your feedback here..."
             />
           </div>
@@ -136,8 +136,8 @@ export default function FeedbackSlider(props: Props) {
             </div>
           </div>
           <div className="pt-6 w-full">
-            <Button
-              className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            <GhButton
+              className="w-full"
               disabled={submitted}
             >
               {!isLoading && (
@@ -151,7 +151,7 @@ export default function FeedbackSlider(props: Props) {
                   <span>Submitting...</span>
                 </>
               )}
-            </Button>
+            </GhButton>
           </div>
         </form>
       </SheetContent>
