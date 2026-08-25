@@ -3,7 +3,7 @@
 
 /*
  * GitHub-inspired dark design system. All colors are oklch tokens.
- */
+*/
 
 @theme inline {
     --radius-sm: calc(var(--radius) - 4px);
