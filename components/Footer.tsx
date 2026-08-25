@@ -7,8 +7,8 @@ export function Footer() {
   return (
     <footer className="text-card-foreground py-6 bg-linear-to-br to-background from-card-800">
       <div className="flex items-center justify-center">
-        <GithubIconLink className="w-auto px-2 gap-4">
-          <div className="flex gap-2 items-center">
+        <GithubIconLink className="w-auto px-2 gap-3">
+          <div className="flex gap-3 items-center">
             <small className="underline underline-offset-2 text-black/70 text-[12px]">
               medmaha/github-activity-rewind
             </small>
