@@ -7,6 +7,8 @@ import { headers } from "next/headers";
 import { createHash } from "node:crypto";
 
 export async function createFeedback(data: typeof feedbacks.$inferInsert) {
+    if (!process.env.DATABASE_URL) throw new Error("Feedback is not setup for this project");
+
     try {
         await enforceRateLimit("feedback");
         const ua = userAgent({ headers: await headers() });
