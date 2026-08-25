@@ -1,3 +1,5 @@
+"server only"
+
 import type { InsightsSummary } from "./rewind-schemas";
 import type { AiInsights } from "./rewind-types";
 
@@ -16,11 +18,11 @@ Return STRICT JSON only, matching:
   "shareCaption": string (max 260 chars, LinkedIn-ready, first person, 1-2 emojis max)
 }`;
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const apiKey = process.env["GEMINI_API_KEY"];
+const genAI = new GoogleGenerativeAI(apiKey || "");
 
 
 export async function generateInsights(summary: InsightsSummary): Promise<AiInsights> {
-  const apiKey = process.env["LLM_API_KEY"];
   if (!apiKey) throw new Error("AI is not configured for this project.");
 
   const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });

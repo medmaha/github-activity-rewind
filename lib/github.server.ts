@@ -127,8 +127,29 @@ async function fetchLanguages(repos: Json[], token: string | undefined, notes: s
   return { languages, totalBytes: sum };
 }
 
+type GithubEvent = {
+  "id": string,
+  "type": "PublicEvent" | "PushEvent",
+  "actor": {
+    "id": number,
+    "login": string,
+    "display_login": string,
+    "gravatar_id": string,
+    "url": string,
+  },
+  "repo": {
+    "id": number,
+    "name": string,
+    "url": string
+  },
+  payload: { commits?: any[] }
+  "public": boolean,
+  "created_at": string
+}
+
 async function fetchEvents(login: string, token: string | undefined) {
-  const events: Json[] = [];
+  const events: GithubEvent[] = [];
+
   for (let page = 1; page <= 3; page++) {
     const chunk = await gh<Json[]>(`/users/${login}/events?per_page=100&page=${page}`, token);
     events.push(...chunk);
@@ -137,7 +158,7 @@ async function fetchEvents(login: string, token: string | undefined) {
   return events;
 }
 
-function buildMonthly(events: Json[], repos: Json[], year: number): MonthlyPoint[] {
+function buildMonthly(events: GithubEvent[], repos: Json[], year: number): MonthlyPoint[] {
   const months = Array.from({ length: 12 }, (_, i) => ({
     month: new Date(Date.UTC(year, i, 1)).toLocaleString("en-US", { month: "short" }),
     commits: 0,
@@ -158,11 +179,11 @@ function buildMonthly(events: Json[], repos: Json[], year: number): MonthlyPoint
   return months;
 }
 
-function streakStats(events: Json[], year: number) {
+function streakStats(events: GithubEvent[], year: number) {
   const days = new Set<string>();
   for (const e of events) {
     const d = new Date(e.created_at);
-    if (d.getUTCFullYear() === year) days.add(d.toISOString().slice(0, 10));
+    if (d.getFullYear() === year) days.add(d.toISOString().slice(0, 10));
   }
   const sorted = [...days].sort();
   let longest = 0;
